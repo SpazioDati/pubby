@@ -23,9 +23,20 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>GraphURLServlet</servlet-name>
+    <servlet-class>de.fuberlin.wiwiss.pubby.servlets.GraphURLServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>PageURLServlet</servlet-name>
     <url-pattern>/page/*</url-pattern>
+  </servlet-mapping>
+
+    <servlet-mapping>
+    <servlet-name>GraphURLServlet</servlet-name>
+    <url-pattern>/graph/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

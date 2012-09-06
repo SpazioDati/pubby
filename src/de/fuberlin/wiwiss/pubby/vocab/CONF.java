@@ -41,4 +41,5 @@ public class CONF {
     public static final Property anonymousPropertyDescriptionQuery = m.createProperty(NS + "anonymousPropertyDescriptionQuery");
     public static final Property anonymousInversePropertyDescriptionQuery = m.createProperty(NS
             + "anonymousInversePropertyDescriptionQuery");
+    public static final Property graphSizeLimit = m.createProperty(NS + "graphSizeLimit");
 }

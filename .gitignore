@@ -1,3 +1,8 @@
 webapp/WEB-INF/classes
+out
 pubby-*.zip
 pubby.war
+atlassian-ide-plugin.xml
+*.ipr
+*.iws
+*.iml

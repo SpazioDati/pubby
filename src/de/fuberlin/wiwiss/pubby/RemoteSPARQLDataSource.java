@@ -1,12 +1,13 @@
 package de.fuberlin.wiwiss.pubby;
 
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
+
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * A data source backed by a SPARQL endpoint accessed through
@@ -104,8 +105,17 @@ public class RemoteSPARQLDataSource implements DataSource {
 		}
 		return model;
 	}
-	
-	public String getPreviousDescribeQuery() {
+
+    public Model getGraphDescription(String graphURI, int limit) {
+        return executeQuery(
+                preProcessQuery(
+                        String.format("CONSTRUCT {?s ?p ?o} WHERE { GRAPH ?__this__ {?s ?p ?o} } LIMIT %d", limit),
+                        graphURI
+                )
+        );
+    }
+
+    public String getPreviousDescribeQuery() {
 		return previousDescribeQuery;
 	}
 	
@@ -121,8 +131,8 @@ public class RemoteSPARQLDataSource implements DataSource {
 		
 		HttpQuery httpQuery = new HttpQuery(endpointURL);
 		httpQuery.addParam("query", queryString);
-		if (defaultGraphURI != null) {
-			httpQuery.addParam("default-graph-uri", defaultGraphURI);
+		if (defaultGraphURI != null && !queryString.contains("GRAPH")) {
+		    httpQuery.addParam("default-graph-uri", defaultGraphURI);
 		}
 		httpQuery.setAccept("application/rdf+xml");
 		

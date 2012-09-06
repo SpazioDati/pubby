@@ -19,4 +19,7 @@ public interface DataSource {
 	Model getResourceDescription(String resourceURI);
 	
 	Model getAnonymousPropertyValues(String resourceURI, Property property, boolean isInverse);
+
+    Model getGraphDescription(String graphURI, int limit);
+
 }

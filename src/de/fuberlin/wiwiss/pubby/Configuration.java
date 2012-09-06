@@ -1,9 +1,5 @@
 package de.fuberlin.wiwiss.pubby;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -16,8 +12,11 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
 import de.fuberlin.wiwiss.pubby.vocab.CONF;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * The server's configuration.
@@ -158,4 +157,9 @@ public class Configuration {
 	public String getWebApplicationBaseURI() {
 		return config.getProperty(CONF.webBase).getResource().getURI();
 	}
+
+    public int getGraphSizeLimit() {
+        final Statement limit = config.getProperty(CONF.graphSizeLimit);
+        return limit == null ? 100 : limit.getObject().asLiteral().getInt();
+    }
 }

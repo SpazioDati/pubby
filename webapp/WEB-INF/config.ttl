@@ -41,9 +41,9 @@
     # Project name for display in page titles
     conf:projectName "DBpedia.org";
     # Homepage with description of the project for the link in the page header
-    conf:projectHomepage <http://dbpedia.org>;
+    conf:projectHomepage <http://mapped.spaziodati.eu>;
     # The Pubby root, where the webapp is running inside the servlet container.
-    conf:webBase <http://localhost:8080/>;
+    conf:webBase <http://localhost:8888/pubby/>;
     # URL of an RDF file whose prefix mapping is to be used by the
     # server; defaults to <>, which is *this* file.
     conf:usePrefixesFrom <>;
@@ -52,7 +52,9 @@
     conf:defaultLanguage "en";
     # When the homepage of the server is accessed, this resource will
     # be shown.
-    conf:indexResource <http://dbpedia.org/resource/Wikipedia>;
+    conf:indexResource <http://mapped.spaziodati.eu/resource>;
+    # Max size of statements retrieved for a graph.
+    conf:graphSizeLimit 300;
 
 # Dataset configuration section #1 (for DBpedia resources)
 #
@@ -60,11 +62,11 @@
 # URIs on the Web:             http://localhost:8080/resource/*
     conf:dataset [
         # SPARQL endpoint URL of the dataset
-        conf:sparqlEndpoint <http://dbpedia.openlinksw.com:8890/sparql>;
+        conf:sparqlEndpoint <http://mapped.spaziodati.eu/sparql>;
         # Default graph name to query (not necessary for most endpoints)
-        conf:sparqlDefaultGraph <http://dbpedia.org>;
+        conf:sparqlDefaultGraph <http://mapped.spaziodati.eu>;
         # Common URI prefix of all resource URIs in the SPARQL dataset
-        conf:datasetBase <http://dbpedia.org/resource/>;
+        conf:datasetBase <http://mapped.spaziodati.eu/resource/>;
         # Will be appended to the conf:webBase to form the public
         # resource URIs; if not present, defaults to ""
         conf:webResourcePrefix "resource/";
@@ -94,9 +96,9 @@
 # URIs on the Web:             http://localhost:8080/class/*
 #                              http://localhost:8080/property/*
     conf:dataset [
-        conf:sparqlEndpoint <http://dbpedia.openlinksw.com:8890/sparql>;
-        conf:sparqlDefaultGraph <http://dbpedia.org>;
-        conf:datasetBase <http://dbpedia.org/>;
+        conf:sparqlEndpoint <http://mapped.spaziodati.eu/sparql>;
+        conf:sparqlDefaultGraph <http://mapped.spaziodati.eu>;
+        conf:datasetBase <http://mapped.spaziodati.eu>;
         # Dataset URIs are mapped only if the part after the
         # conf:webBase matches this regular expression
         conf:datasetURIPattern "(class|property)/.*";

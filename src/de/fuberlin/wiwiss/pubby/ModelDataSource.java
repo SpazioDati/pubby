@@ -50,8 +50,20 @@ public class ModelDataSource implements DataSource {
 		}
 		return result;
 	}
-	
-	private void addResourceDescription(Resource resource, Model targetModel) {
+
+    public Model getGraphDescription(String graphURI, int limit) {
+        final StmtIterator iterator = model.listStatements(null, null, null, graphURI);
+        final Model result = ModelFactory.createDefaultModel();
+        int count = 0;
+        while(iterator.hasNext()) {
+            if(count > limit) break;
+            result.add( iterator.nextStatement() );
+            count++;
+        }
+        return result;
+    }
+
+    private void addResourceDescription(Resource resource, Model targetModel) {
 		targetModel.add(model.listStatements(resource, null, (RDFNode) null));
 		targetModel.add(model.listStatements(null, null, resource));
 	}

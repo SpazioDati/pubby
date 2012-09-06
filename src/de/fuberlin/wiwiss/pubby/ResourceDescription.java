@@ -1,13 +1,5 @@
 package de.fuberlin.wiwiss.pubby;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -18,7 +10,13 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-import de.fuberlin.wiwiss.pubby.Configuration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A convenient interface to an RDF description of a resource.
@@ -34,6 +32,7 @@ public class ResourceDescription {
 	private final Resource resource;
 	private final Configuration config;
 	private List properties = null;
+    private List<ResourceToProperties> resources = null;
 	
 	public ResourceDescription(MappedResource mappedResource, Model model, 
 			Configuration config) {
@@ -90,9 +89,22 @@ public class ResourceDescription {
 		}
 		return properties;
 	}
+
+    /**
+     * If the current resource is an <i>RDF</i> graph
+     * this method returns the list of resources within it.
+     *
+     * @return list of resources within the graph.
+     */
+    public List<ResourceToProperties> getResources() {
+        if (resources == null) {
+            resources = buildResources();
+        }
+        return resources;
+    }
 	
-	private List buildProperties() {
-		Map propertyBuilders = new HashMap();
+	private List<ResourceProperty> buildProperties(Resource resource) {
+		Map<String,PropertyBuilder> propertyBuilders = new HashMap<String,PropertyBuilder>();
 		StmtIterator it = resource.listProperties();
 		while (it.hasNext()) {
 			Statement stmt = it.nextStatement();
@@ -101,7 +113,7 @@ public class ResourceDescription {
 			if (!propertyBuilders.containsKey(key)) {
 				propertyBuilders.put(key, new PropertyBuilder(predicate, false));
 			}
-			((PropertyBuilder) propertyBuilders.get(key)).addValue(stmt.getObject());
+			propertyBuilders.get(key).addValue(stmt.getObject());
 		}
 		it = model.listStatements(null, null, resource);
 		while (it.hasNext()) {
@@ -111,9 +123,9 @@ public class ResourceDescription {
 			if (!propertyBuilders.containsKey(key)) {
 				propertyBuilders.put(key, new PropertyBuilder(predicate, true));
 			}
-			((PropertyBuilder) propertyBuilders.get(key)).addValue(stmt.getSubject());
+			propertyBuilders.get(key).addValue(stmt.getSubject());
 		}
-		List results = new ArrayList();
+		List<ResourceProperty> results = new ArrayList<ResourceProperty>();
 		Iterator it2 = propertyBuilders.values().iterator();
 		while (it2.hasNext()) {
 			PropertyBuilder propertyBuilder = (PropertyBuilder) it2.next();
@@ -122,6 +134,26 @@ public class ResourceDescription {
 		Collections.sort(results);
 		return results;
 	}
+
+    private List<ResourceProperty> buildProperties() {
+        return buildProperties(this.resource);
+    }
+
+    private List<ResourceToProperties> buildResources() {
+        final StmtIterator stmtIterator = model.listStatements();
+        Resource currSubject;
+        Resource prevSubject = null;
+        Statement statement;
+        final List<ResourceToProperties> result = new ArrayList<ResourceToProperties>();
+        while(stmtIterator.hasNext()) {
+            statement = stmtIterator.nextStatement();
+            currSubject = statement.getSubject();
+            if(currSubject.equals(prevSubject)) continue;
+            result.add( new ResourceToProperties(currSubject, buildProperties(currSubject)) );
+            prevSubject = currSubject;
+        }
+        return result;
+    }
 
 	private PrefixMapping getPrefixes() {
 		return model;
@@ -300,4 +332,22 @@ public class ResourceDescription {
 			return getNode().getLiteralLexicalForm().compareTo(otherValue.getNode().getLiteralLexicalForm());
 		}
 	}
+
+    public class ResourceToProperties {
+        private final Resource resource;
+        private final List<ResourceProperty> resourceProperties;
+
+        public ResourceToProperties(Resource resource, List<ResourceProperty> resourceProperties) {
+            this.resource = resource;
+            this.resourceProperties = resourceProperties;
+        }
+
+        public Resource getResource() {
+            return resource;
+        }
+
+        public List<ResourceProperty> getResourceProperties() {
+            return resourceProperties;
+        }
+    }
 }
