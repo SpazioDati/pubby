@@ -72,7 +72,7 @@ public abstract class BaseServlet extends HttpServlet {
     protected Model getGraphDescription(MappedResource resource) {
         return new ModelTranslator(
    				resource.getDataset().getDataSource().getGraphDescription(
-   						resource.getPageURL(),
+   						resource.getGraphURL(),
                         config.getGraphSizeLimit()
                 ),
    				config).getTranslated();

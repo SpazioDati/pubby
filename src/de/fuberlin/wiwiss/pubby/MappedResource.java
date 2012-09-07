@@ -57,6 +57,13 @@ public class MappedResource {
 	public String getDataURL() {
 		return serverConfig.getWebApplicationBaseURI() + "data/" + relativeWebURI;
 	}
+
+    /**
+   	 * @return the HTML page describing the graph on the public Web server
+   	 */
+   	public String getGraphURL() {
+   		return serverConfig.getWebApplicationBaseURI() + "graph/" + relativeWebURI;
+   	}
 		
 	public String getPathPageURL(Property property) {
 		return getPathURL("pathpage/", property);
