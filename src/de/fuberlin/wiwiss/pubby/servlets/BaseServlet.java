@@ -70,12 +70,9 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 
     protected Model getGraphDescription(MappedResource resource) {
-   		// TODO: fix it.
-        final int lastIndexOf = resource.getPageURL().lastIndexOf("http://");
-        final String graphURL = resource.getPageURL().substring(lastIndexOf);
         return new ModelTranslator(
    				resource.getDataset().getDataSource().getGraphDescription(
-   						graphURL,
+   						resource.getPageURL(),
                         config.getGraphSizeLimit()
                 ),
    				config).getTranslated();
